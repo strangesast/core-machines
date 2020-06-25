@@ -132,3 +132,25 @@ join (
 )
 order by a.timestamp desc
 ```
+
+# Machine Values During ACTIVE Executions
+```
+select *
+from (
+	select
+		machine_id,
+		property,
+		to_timestamp(timestamp/1000) as timestamp,
+		value,
+		"offset"
+	from machine_values
+) a
+join (
+	select *
+	from machine_execution_state
+	where value = 'ACTIVE'
+	order by timestamp desc
+	limit 10
+) b
+on (a.machine_id = b.machine_id and a.timestamp >= b.timestamp and a.timestamp < b.next_timestamp)
+```
