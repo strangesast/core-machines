@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = ".;proto";
+
+// import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+service MonitoringProducer {
+  rpc PushSample(SampleGroup) returns (Empty) {}
+}
+
+service MonitoringConsumer {
+  rpc GetUpdates(Empty) returns (stream DeviceState) {}
+}
+
+message Sample {
+  string device = 1;
+  string itemid = 2; // unique, based on device / component
+  int64 sequence = 3;
+  string component = 4;
+  SampleType type = 5;
+  string value = 6;
+  google.protobuf.Timestamp timestamp = 7;
+  string tag = 8; // xml.Name.Local, i.e. Angle, Load, AssetChanged
+  map<string, string> attrs = 9;
+
+  enum SampleType {
+    UNKNOWN = 0;
+    EVENT = 1;
+    SAMPLE = 2;
+    CONDITION = 3;
+  }
+}
+
+message SampleGroup {
+  int64 lastSequence = 1;
+  repeated Sample samples = 2;
+  google.protobuf.Timestamp collectedAt = 3;
+}
+
+message DeviceComponent {
+  string id = 1;
+  string type = 2; // called "component" in xml
+  string name = 3;
+}
+
+message DeviceState {
+  message Attr {
+    string value = 2;
+  }
+  map<string, Attr> attrs = 12;
+}
+
+message Empty {}

@@ -1,0 +1,4 @@
+https://smstestbed.nist.gov/vds/sample?interval=1000
+https://smstestbed.nist.gov/vds/sample?path=//Devices/Device[@name="Mazak01"]//Components//Path//*[@name="execution"]
+https://smstestbed.nist.gov/vds/sample?path=//Devices/Device[@name=%27GFAgie01%27]//Components//Path//*[@name=%22program%22]&count=1000
+localhost:5000/sample?path=//Devices/Device[@name='Fanuc-0id-01']/Components/Linear/*/*[@name='Zact' or @name='Yact' or @name='Xact']
