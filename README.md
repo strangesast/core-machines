@@ -154,3 +154,22 @@ join (
 ) b
 on (a.machine_id = b.machine_id and a.timestamp >= b.timestamp and a.timestamp < b.next_timestamp)
 ```
+
+## Part Count Active Execution
+```
+select *
+from (
+	select
+		machine_id,
+		value,
+		timestamp,
+		case when next_timestamp is null then now() else next_timestamp end,
+		"offset"
+	from machine_execution_state
+	where value = 'ACTIVE'
+	order by timestamp desc
+) a
+left join machine_part_count b on (
+	a.machine_id = b.machine_id and b.timestamp >= a.timestamp and b.timestamp < a.next_timestamp
+)
+```
