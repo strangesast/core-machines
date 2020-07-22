@@ -130,7 +130,7 @@ func main() {
 				}
 				producer.Input() <- message
 			case err := <-producer.Errors():
-				log.Printf("err: %v", err)
+				log.Fatalf("producer error: %v", err)
 			}
 		}
 	}()
