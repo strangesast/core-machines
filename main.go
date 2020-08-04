@@ -32,11 +32,14 @@ func main() {
 		log.Fatalln("failed to parse kafka version string")
 	}
 
+	machineID := getEnv("MACHINE_ID", "unknown")
+	log.Printf("using MACHINE_ID='%s'\n", machineID)
+
 	config := sarama.NewConfig()
 	config.Net.DialTimeout = 5 * time.Minute
 	config.Version = kafkaVersion
 	config.Producer.Return.Successes = true
-	config.ClientID = "golang-serial-monitoring-producer"
+	config.ClientID = "golang-serial-monitoring-producer-" + machineID
 
 	kafkaHosts := strings.Split(getEnv("KAFKA_HOSTS", "localhost:9092"), ",")
 	log.Printf("using KAFKA_VERSION='%v', KAFKA_HOSTS='%v'\n", kafkaVersion, kafkaHosts)
@@ -49,9 +52,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create sarama producer: %v", err)
 	}
-
-	machineID := getEnv("MACHINE_ID", "unknown")
-	log.Printf("using MACHINE_ID='%s'\n", machineID)
 
 	// tcp socket stuff
 	adapterHost := getEnv("ADAPTER_HOST", "localhost:7878")
